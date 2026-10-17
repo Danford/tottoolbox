@@ -1,0 +1,26 @@
+{
+  "apps": [
+    {
+      "id": "app.tottoolbox",
+      "name": "Tot Toolbox",
+      "emoji": "🧰",
+      "blurb": "Installs and updates the free Tot Toolbox apps.",
+      "versionCode": 3,
+      "versionName": "1.2",
+      "apk": "apks/app.tottoolbox-3.apk",
+      "size": 25351,
+      "sha256": "ad3214ae69f2a8a9dbed5d62423c188461e18df994f01572a3eb3e991a7922de"
+    },
+    {
+      "id": "app.tottoolbox.flashcards",
+      "name": "Tot Flash Cards",
+      "emoji": "🐳",
+      "blurb": "Tap a picture to hear its name and its real sound. Ocean, farm, zoo, trucks, music and more.",
+      "versionCode": 21,
+      "versionName": "1.20",
+      "apk": "apks/app.tottoolbox.flashcards-21.apk",
+      "size": 42196294,
+      "sha256": "e11a883d6b5648672ff904e54fcd4dc00aea0ab16762c2845e9a9846218b8f2d"
+    }
+  ]
+}
