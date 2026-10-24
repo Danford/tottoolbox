@@ -1,0 +1,14 @@
+{
+  "name": "Bumplings: Pregnancy for Two",
+  "short_name": "Bumplings",
+  "description": "Week-by-week pregnancy companion for both parents, with no ads and no account.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf6f2",
+  "theme_color": "#fbf6f2",
+  "icons": [
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

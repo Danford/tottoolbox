@@ -1,0 +1,70 @@
+{
+  "apps": [
+    {
+      "id": "app.tottoolbox",
+      "name": "Tot Toolbox",
+      "emoji": "🧰",
+      "blurb": "Installs and updates the free Tot Toolbox apps.",
+      "versionCode": 4,
+      "versionName": "1.3",
+      "apk": "apks/app.tottoolbox-4.apk",
+      "size": 25354,
+      "sha256": "438582da249d26c46f5d0f84a8848002e2f61b18d8cd058496d2884cb5246438"
+    },
+    {
+      "id": "app.tottoolbox.flashcards",
+      "name": "Tot Flash Cards",
+      "emoji": "🐳",
+      "blurb": "Tap a picture to hear its name and its real sound. Ocean, farm, zoo, trucks, music and more.",
+      "versionCode": 36,
+      "versionName": "1.33.2",
+      "apk": "apks/app.tottoolbox.flashcards-36.apk",
+      "size": 6324187,
+      "sha256": "92fd736b7b4d2dfbb9b3f714f261830437efdbcd0a981bd6254eecdb444faa9b"
+    },
+    {
+      "id": "app.tottoolbox.counting",
+      "name": "Tot Counting",
+      "emoji": "🔢",
+      "blurb": "Count from one to ten with pictures. Tap each one to count it, or tap the card to count them all together.",
+      "versionCode": 8,
+      "versionName": "1.5.2",
+      "apk": "apks/app.tottoolbox.counting-8.apk",
+      "size": 3796610,
+      "sha256": "edfbf459feb1674fe74d3df72963a9f31a8e7ffa778234886dd3fdbd03c82da4"
+    },
+    {
+      "id": "app.tottoolbox.compare",
+      "name": "Tot Compare",
+      "emoji": "🐘",
+      "blurb": "Which one is big? Which one is fast? Two pictures, one question: big and small, tall and short, more and less, fast and slow.",
+      "versionCode": 6,
+      "versionName": "1.3.2",
+      "apk": "apks/app.tottoolbox.compare-6.apk",
+      "size": 4021772,
+      "sha256": "b837a5307e6bbd5806b9935a69903b27189540200ed53b769a5362e39c2b5cbf"
+    },
+    {
+      "id": "app.tottoolbox.routines",
+      "name": "Tot Routines",
+      "emoji": "🌙",
+      "blurb": "For grown-ups: build morning, bedtime, mealtime and school-day routines that fit your child's age (1 to 7), with what's realistic to expect and how to make each step stick, and get a balanced plan for each day of the week, tuned to what they love, with when they leave for school and who picks them up. Then hand over a picture chart with photos of their own things and your voice saying each step, print it for the wall, and get a reminder before it starts. Keep a journal of photos, videos and notes about each routine and activity, shared with the other grown-ups' phones.",
+      "versionCode": 35,
+      "versionName": "1.25.1",
+      "apk": "apks/app.tottoolbox.routines-35.apk",
+      "size": 234930,
+      "sha256": "a84239b8da79c880dbed5212ae7bf49ff6d31e44b58ec757342ac77ff7f8a4f9"
+    },
+    {
+      "id": "app.tottoolbox.bump",
+      "name": "Bumplings",
+      "emoji": "🤰",
+      "blurb": "For expecting parents: where you are week by week (the baby's size and development, what's happening in the body, and tips for both of you), every checkup, test and vaccine with its real dates for your due date, appointments with questions and notes, a kick counter, a contraction timer that tells you when to call, a journal with weight, blood pressure and blood sugar, a weekly bump photo diary, \"Is it safe?\" answers for food, medicines and everyday things, a birth plan to share or print, baby names you both vote on, the hospital bag, a private mood check, and the warning signs with one-tap calls. After the birth, a baby log for feeds, diapers and sleep, and six months of checkups. Share it between both phones, privately, even with an iPhone: a contraction timed on one shows on the other.",
+      "versionCode": 30,
+      "versionName": "1.13.1",
+      "apk": "apks/app.tottoolbox.bump-30.apk",
+      "size": 1401702,
+      "sha256": "52b5fa006573360860b2ff947e089c0e1f1164bd29e8caf13195b191c0b2a4d0"
+    }
+  ]
+}
