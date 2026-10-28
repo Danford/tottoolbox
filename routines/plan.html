@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supporting Tot Toolbox</title>
+<!-- Where Stripe sends a grown-up back after buying, cancelling or managing Tot Routines' Supporter plan
+     (apps/routines/sync/plans.js): ?done=1 bought, ?done=0 went back without buying, no ?done from Manage. -->
+<style>body{font-family:system-ui,sans-serif;max-width:32rem;margin:3rem auto;padding:0 1rem;color:#264653;line-height:1.5;text-align:center}h1{color:#2a9d8f}</style>
+</head><body>
+<h1 id="t">Back to Tot Routines</h1>
+<p id="p">You can close this page and go back to the app.</p>
+<p><small>Questions? <a href="mailto:support@tottoolbox.com">support@tottoolbox.com</a></small></p>
+<script>
+const done = new URLSearchParams(location.search).get('done');
+if (done === '1') {
+  document.getElementById('t').textContent = '💛 Thank you for supporting us!';
+  document.getElementById('p').textContent = 'You’re helping keep Tot Toolbox free for every family. Go back to Tot Routines: as our thanks, every phone sharing your family now makes its new videos at the best quality it can, up to 4K.';
+} else if (done === '0') {
+  document.getElementById('t').textContent = 'Nothing was paid';
+}
+</script>
+</body></html>

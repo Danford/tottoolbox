@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Only the app's own scripts run, and the page talks only to the sharing server: whatever came from the other
+     phone can't run as code or send anything anywhere, even if it got past the checks in sync.js. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; connect-src https://sync.tottoolbox.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bumplings</title>
+<link rel="stylesheet" href="style.css">
+<!-- For Bumplings on the web (tottoolbox.com/bumplings/app/): added to an iPhone's home screen it opens like
+     an app. The manifest and icons are only in the web copy (apps/bump/web); the Android app ignores these. -->
+<meta name="theme-color" content="#f8f2f5">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bumplings">
+</head>
+<body data-screen="home">
+
+<!-- What's 🔒 private came from another phone locked (vault.js), and its key didn't come along: unlock it first. -->
+<section id="locked" class="screen">
+  <h1><span class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2ZM8.5 9V7a3.5 3.5 0 0 1 7 0v2M12 14v3"/></svg></span>Your private photos and entries are locked</h1>
+  <p class="muted">They were locked on the phone they came from, and its key didn't come along (keys never leave a phone). Unlock them <span id="lockHow"></span>.</p>
+  <div id="lockByKey">
+    <label class="field">Backup key <input type="text" id="lockCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XX"></label>
+    <button class="btn primary big" id="lockOpen">Unlock</button>
+  </div>
+  <div id="lockFamily" hidden>
+    <h3>Shared with the other phone?</h3>
+    <p class="muted">On the other phone, open Bumplings, tap 👪 Sharing is on, then Invite the other phone, and scan its code here. That starts sharing again too.</p>
+    <button class="btn big" id="lockScan">📷 Scan the invite</button>
+  </div>
+  <div class="scan" id="lockScanBox" hidden></div>
+  <p class="advice" id="lockErr" hidden></p>
+  <p class="muted" style="margin-top:24px">Everything shared is here already.</p>
+  <button class="btn danger big" id="lockErase">Go on without them</button>
+</section>
+
+<!-- The pregnancy's details: everything else follows from the due date. Also the settings screen. -->
+<section id="setup" class="screen">
+  <div class="top" id="setupTop"><button class="link" data-back>‹ Back</button></div>
+  <div class="welcome" id="welcomeArt"></div>
+  <h1 id="setupTitle">Welcome to Bumplings</h1>
+  <p class="muted" id="setupIntro">Week by week: how the baby is growing, what's happening in the body, the checkups and tests coming up with their real dates, and what the partner can do. Use it on both your phones and it stays in step.</p>
+  <p id="setupJoin"><button class="btn big">👪 Already set up on the other phone? Scan its invite</button></p>
+  <h3>Whose phone is this?</h3>
+  <div class="chips" id="me"></div>
+  <label class="field">Name of the one who's pregnant <input type="text" id="momName" maxlength="30" autocomplete="off"></label>
+  <label class="field">Partner's name <input type="text" id="partnerName" maxlength="30" autocomplete="off"></label>
+  <label class="field">What you're calling the baby for now <input type="text" id="babyName" maxlength="30" autocomplete="off" placeholder="e.g. Peanut"></label>
+  <h3>How far along</h3>
+  <div class="chips" id="how"></div>
+  <label class="field"><span id="fromLbl"></span> <input type="date" id="from"></label>
+  <div class="chips" id="embryo" hidden></div>
+  <p class="note" id="dueNote" hidden></p>
+  <label class="check"><input type="checkbox" id="first"> This is our first baby</label>
+  <label class="check"><input type="checkbox" id="rhneg"> Rh-negative blood type (adds the Rh shot to the checklist)</label>
+  <label class="check"><input type="checkbox" id="gdm"> Gestational diabetes (adds blood sugar to the journal)</label>
+  <div class="chips" id="gluAfter" hidden></div>
+  <h3>Phone numbers</h3>
+  <p class="muted">For one-tap calls from 🚨 When to call and the contraction timer.</p>
+  <label class="field">Doctor or midwife <input type="text" id="docName" maxlength="40" placeholder="Name or practice"></label>
+  <label class="field">Their phone <input type="tel" id="docPhone" maxlength="20"></label>
+  <label class="field">Hospital or birth center <input type="text" id="hospName" maxlength="40"></label>
+  <label class="field">Labor and delivery phone <input type="tel" id="ldPhone" maxlength="20"></label>
+  <h3>For weight gain (optional)</h3>
+  <div class="row2">
+    <label class="field">Height (inches) <input type="number" id="height" min="48" max="84" step="0.5" inputmode="decimal"></label>
+    <label class="field">Weight before (lb) <input type="number" id="prewt" min="70" max="500" step="0.5" inputmode="decimal"></label>
+  </div>
+  <h3>When to go in</h3>
+  <p class="muted">The rule your provider gave you for contractions. Many say 5-1-1 for a first baby: 5 minutes apart, 1 minute long, for 1 hour.</p>
+  <div class="row3">
+    <label class="field">Minutes apart <input type="number" id="ruleEvery" min="2" max="15" inputmode="numeric"></label>
+    <label class="field">Minutes long <input type="number" id="ruleLong" min="0.5" max="2" step="0.5" inputmode="decimal"></label>
+    <label class="field">For hours <input type="number" id="ruleHours" min="0.5" max="2" step="0.5" inputmode="decimal"></label>
+  </div>
+  <p class="advice" id="setupErr" hidden></p>
+  <button class="btn primary big" id="saveSetup">Save</button>
+  <div id="setupMore">
+    <button class="btn big" id="bornBtn"></button>
+    <button class="btn big" id="shareBtn2">👪 Sharing</button>
+    <h3>Menu buttons</h3>
+    <p class="muted">How the buttons in the menu look on this phone.</p>
+    <div class="chips" id="look"></div>
+    <div id="notifyRow" hidden><p class="muted">Notifications are off, so reminders for appointments and each new week don't show.</p>
+      <button class="btn big" id="notifyBtn">🔔 Turn on reminders</button></div>
+    <div id="privRow" hidden>
+      <h3>Backup and privacy</h3>
+      <label class="check"><input type="checkbox" id="backupOn"> Back up to my Google account</label>
+      <p class="muted">With Android's own backup, everything in Bumplings comes back on a new or reset phone. With a screen lock on the phone, the backup is encrypted with it, so Google can't read it. Moving straight to a new phone works either way.</p>
+      <div id="keyRow" hidden>
+        <p class="muted" id="keyWords"></p>
+        <button class="btn big" id="keyBtn"></button>
+      </div>
+      <label class="check"><input type="checkbox" id="routinesPhoto"> Show the newest bump photo in Tot Routines</label>
+      <label class="check"><input type="checkbox" id="galleryShared"> Save shared bump photos to my gallery automatically</label>
+      <label class="check"><input type="checkbox" id="galleryPriv"> Save 🔒 private bump photos to my gallery automatically</label>
+      <p class="muted">They go into a Bumplings album. Any photo can also be saved with a tap in 📸 Bump photos. Once in the gallery, a photo is seen by its other apps and backed up with it (to Google Photos, say), so a private one is private there only if you keep it so.</p>
+    </div>
+    <button class="btn big" data-go="about">ℹ️ About Bumplings</button>
+    <p class="muted center" id="ver"></p>
+  </div>
+</section>
+
+<section id="home" class="screen">
+  <div class="top homeTop"><span id="hello"></span><span class="spacer"></span><button class="btn round" data-go="setup" aria-label="Settings" data-ic="settings"></button></div>
+  <div id="liveCard" hidden></div>
+  <div class="hero" id="hero"></div>
+  <div class="card baby" id="babyCard"></div>
+  <div class="card" id="nextCard"></div>
+  <div class="card" id="latelyCard" hidden></div>
+</section>
+<!-- Everything else, behind the round button at home's bottom left. -->
+<button class="fab" id="menuBtn" aria-label="Menu"><span class="m" data-ic="menu"></span><span class="x" data-ic="close"></span><i class="badge" id="menuBadge" hidden></i></button>
+<div class="sheet menuSheet" id="menuSheet"><div>
+  <div class="tiles" id="tools"></div>
+  <div class="menu">
+    <button class="call" data-go="urgent"><span data-sc="call"></span><span class="sq" data-ic="call"></span><span class="lbl"><b>When to call</b><small>The warning signs, with one-tap calls</small></span><i class="chev" data-ic="chev"></i></button>
+    <button id="shareCard"></button>
+    <button id="routinesBtn" hidden><span data-sc="routines"></span><span class="sq" data-ic="routines"></span><span class="lbl"><b>Open Tot Routines</b><small>The kids' days, naps and bedtimes</small></span><i class="chev" data-ic="chev"></i></button>
+  </div>
+</div></div>
+
+<!-- One week: the baby, the body, and what to do, for her and for the partner. -->
+<section id="week" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button><span class="spacer"></span><button class="btn" id="weekPrev">‹</button><button class="btn" id="weekNext">›</button></div>
+  <div id="weekBody"></div>
+</section>
+
+<section id="care" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="care"></span>Checkups and getting ready</h1>
+  <p class="muted">The usual US schedule, with the dates for your due date. Your provider may do things differently. Tick things off: it shows on both phones.</p>
+  <div class="chips" id="careTabs"></div>
+  <div id="careList"></div>
+</section>
+
+<section id="appts" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="appts"></span>Appointments</h1>
+  <p class="muted">Both phones get a reminder the evening before and two hours before. Save questions as you think of them, and notes after.</p>
+  <button class="btn primary big" id="addAppt">+ Add an appointment</button>
+  <div id="apptList"></div>
+</section>
+
+<section id="kicks" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="kicks"></span>Kick counter</h1>
+  <div id="kickBody"></div>
+</section>
+
+<section id="timer" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="timer"></span>Contractions</h1>
+  <div id="timerBody"></div>
+</section>
+
+<section id="journal" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="journal"></span>Journal</h1>
+  <p class="muted">How you're feeling, weight and blood pressure. Bring it to appointments. Each entry can be shared with the other phone or kept 🔒 just on this one.</p>
+  <button class="btn primary big" id="addLog">+ Today</button>
+  <div id="gainCard"></div>
+  <p class="muted" id="logCount"></p>
+  <div id="logList"></div>
+</section>
+
+<section id="names" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="names"></span>Baby names</h1>
+  <p class="muted">Add names, and each of you votes on your own phone. Names you both love rise to the top.</p>
+  <div class="addRow"><input type="text" id="newName" maxlength="30" placeholder="A name you like" autocomplete="off"><button class="btn primary" id="addName">Add</button></div>
+  <div id="nameList"></div>
+</section>
+
+<section id="bag" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="bag"></span>Hospital bag</h1>
+  <p class="muted">Pack by 36 weeks. Ticks show on both phones, so you know what's in.</p>
+  <div id="bagList"></div>
+</section>
+
+<section id="urgent" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="call"></span>When to call</h1>
+  <div id="urgentBody"></div>
+</section>
+
+<section id="photos" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="photos"></span>Bump photos</h1>
+  <div id="photosBody"></div>
+</section>
+
+<section id="scans" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="scans"></span>Ultrasounds</h1>
+  <div id="scansBody"></div>
+</section>
+
+<section id="safe" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="safe"></span>Is it safe?</h1>
+  <input type="search" id="safeQ" class="search" placeholder="Sushi, coffee, Tylenol, hot tub…" autocomplete="off">
+  <div class="chips" id="safeCats"></div>
+  <div id="safeList"></div>
+  <p class="muted">General guidance from ACOG, CDC, FDA and MotherToBaby. Your provider knows your pregnancy: ask them, or a pharmacist, about anything you take.</p>
+</section>
+
+<section id="plan" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="plan"></span>Birth plan</h1>
+  <p class="muted">Your preferences for labor and the first hours, to talk over at a visit around 32 to 36 weeks and bring to the hospital. Fill it in together: it's the same on both phones.</p>
+  <div id="planBody"></div>
+  <div class="twoBtn"><button class="btn" id="planShare">📤 Share</button><button class="btn primary" id="planPrint">🖨️ Print or PDF</button></div>
+  <p class="muted">Preferences, not promises: plans can change for the baby's or mom's safety.</p>
+</section>
+
+<section id="mood" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="mood"></span>Mood check</h1>
+  <div id="moodBody"></div>
+</section>
+
+<section id="babylog" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="babylog"></span>Baby log</h1>
+  <div id="babyBody"></div>
+</section>
+
+<section id="history" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="history"></span>Everything so far</h1>
+  <p class="muted">What's been added and done on both phones, newest first. Things from before Bumplings 1.11 show on their day, without a time or who.</p>
+  <div id="historyBody"></div>
+</section>
+
+<section id="about" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1>About Bumplings</h1>
+  <div class="card"><p id="doctor"></p><h3>Where this comes from</h3><ul class="real muted" id="sources"></ul></div>
+</section>
+
+<div class="sheet" id="apptSheet"><div id="apptBody"></div></div>
+<div class="sheet" id="logSheet"><div id="logBody"></div></div>
+<div class="sheet" id="shareSheet"><div id="shareBody"></div></div>
+<div class="sheet" id="picSheet"><div id="picBody"></div></div>
+<div class="sheet" id="keySheet"><div id="keyBody"></div></div>
+<div id="player"></div>
+<input type="file" id="photoIn" accept="image/*" hidden>
+<!-- What prints: only this, filled in just before (see the print styles). -->
+<pre id="printOut"></pre>
+
+<!-- boot.js opens what's locked (vault.js), then loads the rest. -->
+<script src="vault.js"></script>
+<script src="boot.js"></script>
+</body>
+</html>

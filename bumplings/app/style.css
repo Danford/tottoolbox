@@ -1,0 +1,362 @@
+/* Bumplings. Soft and steady: berry and plum on a blush page, a soft serif (Fraunces, bundled in fonts/) for the
+   numbers and headings, the phone's own face for reading. The one bold thing is home's ring of 40 weeks around the
+   week's picture; everything else stays quiet. */
+@font-face { font-family: 'Fraunces'; src: url(fonts/fraunces.woff2) format('woff2'); font-weight: 100 900; font-display: swap; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root { color-scheme: light dark;
+  --ink: #2e2236; --soft: #6f6178; --bg: #f8f2f5; --card: #fff; --line: #ecdfe6; --rose: #b4436c; --roseInk: #9a3359; --roseBg: #f9e4ec;
+  --plum: #6b4e8a; --sun: #f2b84b; --amber: #c27c0e; --red: #d0283a; --green: #2a8d80;
+  --field: #fff; --btn: #f1e6ec; --chip: #f1e6ec; --note: #fdf3dc; --adviceBg: #fdeaea; --adviceInk: #8a1c24; --goodBg: #e4f3f0; --goodInk: #1d5f57;
+  --todo: #e3d3dd; --shade: 0 1px 2px rgba(46,34,54,.05), 0 6px 20px -12px rgba(46,34,54,.18);
+  --serif: 'Fraunces', Georgia, serif; --r: 20px; }
+/* Follows the phone's light or dark setting. */
+@media (prefers-color-scheme: dark) {
+  :root { --ink: #f3e9f4; --soft: #b8a9c3; --bg: #18111d; --card: #231a2b; --line: #372b42; --rose: #ec8bb0; --roseInk: #f4a9c5; --roseBg: #44203a;
+    --plum: #b79ad6; --amber: #f2b84b; --red: #ff7a8a; --green: #4fc0b1;
+    --field: #1d1524; --btn: #33273e; --chip: #33273e; --note: #3a3220; --adviceBg: #3d2128; --adviceInk: #ffb4ba; --goodBg: #1b3a37; --goodInk: #a6e6dd;
+    --todo: #3c3047; --shade: none; }
+}
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+button { font: inherit; color: inherit; cursor: pointer; }
+input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--rose) 55%, transparent); outline-offset: 2px; }
+input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 0; border-color: var(--rose) !important; box-shadow: 0 0 0 3px color-mix(in srgb, var(--rose) 22%, transparent); }
+.screen { display: none; padding: 16px 18px; padding-bottom: max(36px, env(safe-area-inset-bottom)); max-width: 560px; margin: 0 auto; }
+.screen.on { display: block; animation: fade .18s ease-out; }
+/* Taps answer: anything big you press gives a little. */
+.next, .live > button, .thumb, .appt { transition: transform .1s; }
+.live > button:active, .thumb:active, .appt:active { transform: scale(.97); }
+.next:active { opacity: .6; }
+@media (prefers-reduced-motion: reduce) { .screen.on { animation: none; } }
+.backupKey { font: 700 20px/1.5 ui-monospace, monospace; letter-spacing: 1px; text-align: center; background: var(--chip); border-radius: 12px; padding: 12px; margin: 10px 0; user-select: all; word-break: break-word; }
+h1, h2 { font-family: var(--serif); font-optical-sizing: auto; font-variation-settings: 'SOFT' 100, 'WONK' 0; letter-spacing: -.01em; }
+h1 { font-size: 30px; line-height: 1.15; font-weight: 600; margin: 6px 0 10px; }
+h2 { font-size: 21px; line-height: 1.25; font-weight: 600; margin: 0 0 8px; }
+h3 { font-size: 15px; margin: 22px 0 6px; color: var(--plum); font-weight: 700; }
+p { margin: 6px 0; }
+.muted { color: var(--soft); font-size: 14px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; margin: 14px 0; box-shadow: var(--shade); }
+.btn { border: 0; border-radius: 14px; padding: 11px 18px; font-weight: 700; background: var(--btn); transition: filter .15s, transform .1s; }
+.btn:active { transform: scale(.98); }
+.btn.primary { background: var(--rose); color: #fff; }
+@media (prefers-color-scheme: dark) { .btn.primary { color: #2a1020; } }
+.btn.big { width: 100%; padding: 15px; font-size: 17px; margin-top: 10px; }
+.btn.danger { background: none; color: var(--red); }
+.btn:disabled { opacity: .4; }
+.link { border: 0; background: none; color: var(--roseInk); font-weight: 700; padding: 6px 0; }
+label.field { display: block; margin: 14px 0; font-weight: 600; font-size: 15px; }
+label.field input, label.field textarea { display: block; width: 100%; margin-top: 6px; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--field); font-weight: 400; font-size: 16px; }
+label.field textarea { min-height: 84px; resize: vertical; }
+.row2, .row3 { display: grid; gap: 10px; }
+.row2 { grid-template-columns: 1fr 1fr; }
+.row3 { grid-template-columns: 1fr 1fr 1fr; }
+.row3 label.field { font-size: 13px; }
+.row4 { display: grid; gap: 6px; grid-template-columns: repeat(4, 1fr); }
+.row4 label.field { font-size: 12px; margin: 6px 0; }
+.center { text-align: center; }
+[hidden] { display: none !important; }
+label.check { display: flex; gap: 12px; align-items: center; margin: 14px 0; }
+label.check input { appearance: none; -webkit-appearance: none; margin: 0; width: 24px; height: 24px; flex: none; border: 2px solid var(--todo); border-radius: 8px; background: var(--field) center / 15px no-repeat; transition: background-color .15s, border-color .15s; }
+label.check input:checked { background-color: var(--rose); border-color: var(--rose);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+@media (prefers-color-scheme: dark) { label.check input:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%232a1020' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); } }
+.top { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.top .spacer { flex: 1; }
+.top .btn { width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 20px; line-height: 1; }
+.top .link[data-back] { background: var(--btn); border-radius: 999px; padding: 8px 16px 8px 12px; font-size: 15px; }
+/* A screen's title, its emoji on a soft square: the same squares as in Coming up. */
+h1:has(.ico) { display: flex; align-items: center; gap: 14px; }
+h1 .ico { display: grid; flex: none; place-items: center; width: 48px; height: 48px; border-radius: 15px; color: var(--g, var(--rose)); background: var(--btn); background: color-mix(in srgb, var(--g, var(--rose)) 13%, var(--card)); }
+h1 .ico svg.i { width: 26px; height: 26px; }
+/* Each screen's title in the hue of its button in the menu grid. */
+#journal, #timer, #babylog, #locked { --g: var(--plum); }
+#care, #safe, #bag { --g: var(--green); }
+#photos, #plan, #mood { --g: var(--amber); }
+#scans { --g: var(--plum); }
+#urgent { --g: var(--red); }
+.homeTop #hello { font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-size: 19px; font-weight: 500; color: var(--soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+.chips button { border: 1.5px solid var(--line); background: var(--field); border-radius: 999px; padding: 7px 14px; font-weight: 600; font-size: 15px; }
+.chips button.on { border-color: var(--rose); background: var(--roseBg); color: var(--roseInk); }
+.note { background: var(--note); border-radius: 14px; padding: 12px 14px; font-size: 14px; margin: 10px 0; }
+.advice { background: var(--adviceBg); color: var(--adviceInk); border-radius: 14px; padding: 12px 14px; font-size: 14px; }
+.good { background: var(--goodBg); color: var(--goodInk); border-radius: 14px; padding: 12px 14px; font-size: 14px; }
+.card.advice, .card.good { border-color: transparent; box-shadow: none; }
+/* Nothing here yet: what goes here, and how to add it. */
+.empty { border: 2px dashed var(--todo); border-radius: var(--r); padding: 22px 24px; margin: 14px 0; text-align: center; color: var(--soft); font-size: 15px; }
+.empty .em { display: block; font-size: 34px; margin-bottom: 6px; }
+ul.real { margin: 6px 0; padding-left: 20px; }
+ul.real li { margin: 4px 0; }
+
+/* Home: the week's picture inside a ring of the 40 weeks, one dot a week, a gap between trimesters. Weeks gone are
+   filled, this week is the honey dot. Under it, the week in big soft numerals. */
+.hero { text-align: center; padding: 8px 0 4px; }
+.ring { position: relative; width: min(78vw, 300px); aspect-ratio: 1; margin: 4px auto 10px; }
+.ring svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ring .art { position: absolute; inset: 9%; width: auto; margin: 0; }
+.ring circle { fill: var(--todo); }
+.ring circle.past { fill: var(--rose); }
+.ring circle.now { fill: var(--sun); stroke: var(--bg); stroke-width: 2; }
+.ring .halo { fill: none; stroke: var(--sun); stroke-width: 1.5; opacity: .55; }
+/* Once, when the app opens: the weeks so far fill in, in order. */
+.ring.intro circle.past, .ring.intro circle.now { animation: dotIn .5s cubic-bezier(.3,1.6,.6,1) both; animation-delay: calc(var(--i) * 22ms); transform-box: fill-box; transform-origin: center; }
+@keyframes dotIn { from { transform: scale(0); } }
+@media (prefers-reduced-motion: reduce) { .ring.intro circle { animation: none !important; } }
+.hero .wk { font-family: var(--serif); font-variation-settings: 'SOFT' 100, 'WONK' 1; font-optical-sizing: auto; font-size: 30px; font-weight: 500; line-height: 1; letter-spacing: -.01em; }
+.hero .wk b { font-size: 84px; font-weight: 700; letter-spacing: -.04em; color: var(--rose); margin-right: 6px; vertical-align: -8px; }
+.hero .days { font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-size: 19px; color: var(--soft); margin-top: 8px; }
+.hero .sub { font-size: 15px; color: var(--soft); margin-top: 14px; }
+.hero .sub b { color: var(--ink); }
+.hero.born .wk { font-size: 40px; font-weight: 600; line-height: 1.1; color: var(--rose); padding-top: 18px; }
+.baby .head { display: flex; gap: 14px; align-items: center; }
+.baby .em { font-size: 52px; line-height: 1; }
+.baby .size { font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-weight: 600; font-size: 20px; line-height: 1.2; }
+/* How the baby is forming, and what starts this week: a small label over the heading, the baby's age as a pill,
+   then each part on a soft round, strung down a thin line. */
+.growth .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--roseInk); margin-bottom: 2px; }
+.growth h2 { font-size: 23px; margin-bottom: 10px; }
+.growth .age { display: inline-block; background: var(--roseBg); color: var(--roseInk); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 650; margin-bottom: 6px; }
+.steps { list-style: none; margin: 10px 0 0; padding: 0; }
+.steps li { position: relative; display: grid; grid-template-columns: 40px 1fr; gap: 14px; padding-bottom: 18px; }
+.steps li:last-child { padding-bottom: 4px; }
+.steps li:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 44px; bottom: 4px; width: 2px; border-radius: 1px; background: var(--line); }
+.steps .em { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--btn); font-size: 19px; line-height: 1; }
+.steps b { display: block; font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -.005em; padding-top: 8px; }
+.steps p { margin: 3px 0 0; font-size: 15px; line-height: 1.5; color: var(--soft); }
+.growth .src { font-size: 12px; line-height: 1.45; color: var(--soft); border-top: 1px solid var(--line); margin: 6px 0 0; padding-top: 12px; }
+.part { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 12px; }
+.part b.lbl { display: block; color: var(--roseInk); font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+/* Line icons (art.js ICON), drawn in the text color. */
+svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; display: block; }
+.top .btn[data-ic] { display: grid; place-items: center; }
+/* The menu's buttons (home's shortcuts, then when to call, sharing and Tot Routines) come two ways, chosen in
+   Settings for each phone: icons in a grid (body without .bars), or full-width color bars (body.bars). Each button
+   carries the markup for both: its icon on a tinted square (.sq), and its drawing strewn about (.ic, art.js scatter). */
+.tiles { margin: 22px 0 8px; }
+.tile, .menu > button { position: relative; border: 0; transition: transform .1s, filter .1s, opacity .1s; }
+.tile:active { transform: scale(.97); }
+
+/* Icons in a grid: three across, each a card with its icon on a square tinted its own hue (round the berry, plum,
+   teal and honey of the palette), and under the grid one card of rows. */
+body:not(.bars) .ic { display: none; }
+body:not(.bars) .tiles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+body:not(.bars) .tile { border: 1px solid var(--line); background: var(--card); border-radius: 20px; padding: 16px 6px 13px; display: flex; flex-direction: column; align-items: center; gap: 9px; font-weight: 600; font-size: 13px; line-height: 1.25; text-align: center; color: var(--ink); box-shadow: var(--shade); }
+.sq { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 14px; color: var(--g, var(--rose)); background: var(--btn); background: color-mix(in srgb, var(--g, var(--rose)) 13%, var(--card)); }
+[data-go=week], [data-go=journal], [data-go=timer], [data-go=babylog], [data-go=scans], #shareCard { --g: var(--plum); }
+[data-go=care], [data-go=safe], [data-go=bag], #routinesBtn { --g: var(--green); }
+[data-go=photos], [data-go=plan], [data-go=mood] { --g: var(--amber); }
+.menu .call { --g: var(--red); }
+body:not(.bars) .tile .badge { position: absolute; top: 8px; right: 8px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--rose); color: #fff; font: 800 12px/22px system-ui, sans-serif; }
+@media (prefers-color-scheme: dark) { body:not(.bars) .tile .badge { color: #2a1020; } }
+body:not(.bars) .tile.on { background: var(--roseBg); box-shadow: inset 0 0 0 2px var(--rose); }
+body:not(.bars) .menu { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 4px 14px; box-shadow: var(--shade); }
+body:not(.bars) .menu > button { display: grid; grid-template-columns: 44px 1fr 20px; gap: 14px; align-items: center; width: 100%; text-align: left; border-top: 1px solid var(--line); background: none; padding: 12px 0; }
+body:not(.bars) .menu > button:first-child { border-top: 0; }
+body:not(.bars) .menu > button:active { opacity: .6; }
+body:not(.bars) .menu b { display: block; font-weight: 650; line-height: 1.3; }
+body:not(.bars) .menu small { display: block; font-size: 13px; color: var(--soft); line-height: 1.35; }
+body:not(.bars) .menu .call b { color: var(--adviceInk); }
+.menu .chev svg.i { width: 20px; height: 20px; color: var(--soft); }
+
+/* Color bars: full width, each its own deep color with white on it (3:1 or better, for words this big and bold, and
+   the slight shadow under them), so they read from across a room and the next one never matches the last. */
+.bars .sq, .bars .chev { display: none; }
+.bars .tiles, .bars .menu { display: flex; flex-direction: column; gap: 8px; }
+.bars .tile, .bars .menu > button { overflow: hidden; display: flex; align-items: center; justify-content: center; width: 100%; min-height: 74px; border-radius: 18px; padding: 12px 22px; text-align: center; background: var(--c); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.22); box-shadow: 0 2px 6px -2px color-mix(in srgb, var(--c) 60%, transparent); }
+.bars .tile:active, .bars .menu > button:active { transform: scale(.98); filter: brightness(1.08); }
+/* The words big in the soft serif, in the middle; the bar's drawing strewn round both ends (art.js scatter). */
+.bars .tile .lbl, .bars .menu .lbl { position: relative; display: flex; flex-direction: column; align-items: center; font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-optical-sizing: auto; font-size: 23px; font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
+.bars .tile .lbl { flex-direction: row; gap: 10px; }
+.bars .menu .lbl { font-size: 21px; }
+.bars .menu small { font: 500 13px/1.35 system-ui, sans-serif; opacity: .9; margin-top: 3px; letter-spacing: 0; }
+.bars .ic { position: absolute; transform: rotate(var(--tilt)) scaleX(var(--flip, 1)); pointer-events: none; }
+.bars .ic { color: rgba(255,255,255,.2); color: color-mix(in srgb, var(--c), #fff 20%); }
+.bars .ic svg.i { width: 100%; height: 100%; stroke-width: 1.6; }
+.tiles > :nth-child(6n+1) { --c: #9b5cf0; } /* violet */
+.tiles > :nth-child(6n+2) { --c: #0fa08c; } /* teal */
+.tiles > :nth-child(6n+3) { --c: #ee3f7a; } /* pink */
+.tiles > :nth-child(6n+4) { --c: #4a7bff; } /* blue */
+.tiles > :nth-child(6n+5) { --c: #f26522; } /* orange */
+.tiles > :nth-child(6n+6) { --c: #2fa83a; } /* green */
+.bars .tile .badge { min-width: 26px; height: 26px; padding: 0 8px; border-radius: 13px; background: #fff; color: var(--c); font: 800 14px/26px system-ui, sans-serif; text-align: center; }
+/* The timer while a contraction goes, the baby log while a feed or sleep does: a white ring and a beating dot. */
+.bars .tile.on { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--c); }
+.bars .tile.on .lbl::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: pulse 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .bars .tile.on .lbl::after { animation: none; } }
+/* A contraction going on either phone (plum, like the timer while it runs), or the go-in rule met (red): at the top. */
+.live > button { display: grid; grid-template-columns: 14px 1fr auto; gap: 12px; align-items: center; width: 100%; text-align: left; border: 0; border-radius: 18px; padding: 14px 16px; margin: 6px 0 2px; background: var(--plum); color: #fff; }
+.live.met > button { background: var(--red); }
+@media (prefers-color-scheme: dark) { .live > button { color: #1c1024; } }
+.live i { width: 12px; height: 12px; border-radius: 50%; background: currentColor; animation: pulse 1.6s ease-in-out infinite; }
+.live small { display: block; font-size: 13px; opacity: .9; }
+.live .chev { font-size: 24px; font-weight: 700; }
+@keyframes pulse { 50% { opacity: .35; transform: scale(.7); } }
+@media (prefers-reduced-motion: reduce) { .live i { animation: none; } }
+.menu { margin-bottom: 4px; }
+.menu .call { --c: #f0283f; }
+#shareCard { --c: #5b4bd6; }
+#routinesBtn { --c: #3d6ff0; }
+@media (prefers-color-scheme: dark) { .bars .tile, .bars .menu > button { box-shadow: none; } }
+.next { display: grid; grid-template-columns: 36px 1fr; gap: 10px; align-items: start; width: 100%; text-align: left; border: 0; background: none; padding: 10px 0; border-top: 1px solid var(--line); }
+.next:first-of-type, h3 + .next { border-top: 0; }
+.next .em { font-size: 22px; width: 36px; height: 36px; border-radius: 12px; background: var(--btn); display: grid; place-items: center; }
+.next small { display: block; color: var(--soft); font-size: 13px; }
+
+/* Checklist */
+.item { display: grid; grid-template-columns: 38px 1fr; gap: 10px; padding: 14px 0; border-top: 1px solid var(--line); }
+.item:first-child { border-top: 0; }
+.item .tick { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--todo); background: var(--field); font-size: 16px; padding: 0; color: #fff; }
+.item.done .tick { background: var(--green); border-color: var(--green); }
+.item.done .t { text-decoration: line-through; color: var(--soft); }
+.item .t { font-weight: 700; }
+.item .when { font-size: 13px; color: var(--soft); }
+.item .when b { color: var(--roseInk); }
+.item .what { font-size: 14px; margin-top: 2px; }
+.tag { display: inline-block; background: var(--btn); border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 700; margin-left: 4px; vertical-align: 1px; white-space: nowrap; }
+.when .tag { margin: 0 6px 0 0; vertical-align: 0; }
+.tag.now { background: var(--roseBg); color: var(--roseInk); }
+.tag.missed { background: var(--adviceBg); color: var(--red); }
+
+/* Appointments */
+.appt { display: grid; grid-template-columns: 58px 1fr; gap: 14px; align-items: center; width: 100%; text-align: left; padding: 14px; }
+.appt > span > span { display: block; }
+.appt .d { font-weight: 800; font-size: 17px; }
+.appt.past { opacity: .7; }
+.cal { display: flex; flex-direction: column; align-items: center; border-radius: 14px; background: var(--roseBg); color: var(--roseInk); padding: 6px 0 7px; line-height: 1.1; }
+.cal b { font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-size: 26px; font-weight: 700; color: var(--ink); }
+.cal small { font-size: 12px; font-weight: 700; }
+.appt.past .cal { background: var(--btn); color: var(--soft); }
+/* The first time: the ring around week 20's picture, with nothing filled in yet. */
+.welcome .ring { width: min(56vw, 220px); margin: 12px auto 4px; }
+#setup.first #setupTitle, #setup.first #setupIntro { text-align: center; }
+#setup.first #setupTitle { font-size: 34px; }
+
+/* Kick counter and contraction timer: one big soft button, pressed like a real one. */
+.bigBtn { display: block; width: min(70vw, 260px); aspect-ratio: 1; margin: 22px auto; border-radius: 50%; border: 0; color: #fff; font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-size: 24px; font-weight: 600; line-height: 1.2;
+  background: var(--rose); background: radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--rose) 70%, #fff), var(--rose) 62%); box-shadow: 0 10px 0 color-mix(in srgb, var(--rose) 60%, #000), 0 0 0 10px var(--roseBg); user-select: none; -webkit-user-select: none; }
+.bigBtn:active { transform: translateY(5px); box-shadow: 0 5px 0 color-mix(in srgb, var(--rose) 60%, #000), 0 0 0 10px var(--roseBg); }
+.bigBtn .n { display: block; font-size: 76px; font-weight: 700; line-height: 1; letter-spacing: -.03em; }
+.bigBtn.going { background: var(--plum); background: radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--plum) 70%, #fff), var(--plum) 62%); box-shadow: 0 10px 0 color-mix(in srgb, var(--plum) 55%, #000), 0 0 0 10px color-mix(in srgb, var(--plum) 22%, transparent); animation: breathe 4s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: scale(1.04); } }
+@media (prefers-reduced-motion: reduce) { .bigBtn.going { animation: none; } }
+@media (prefers-color-scheme: dark) { .bigBtn { color: #2a1020; } }
+.stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: center; margin: 12px 0; }
+.stats div { background: var(--card); border-radius: 16px; padding: 12px 4px 10px; box-shadow: var(--shade); }
+@media (prefers-color-scheme: dark) { .stats div { border: 1px solid var(--line); } }
+.card .stats div { background: var(--btn); box-shadow: none; border: 0; }
+.stats b { display: block; font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums lining-nums; line-height: 1.2; }
+.stats small { display: block; color: var(--soft); font-size: 12px; line-height: 1.3; padding: 0 4px; }
+table.rows { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 15px; }
+table.rows th { text-align: left; color: var(--soft); font-size: 13px; font-weight: 700; padding: 4px; }
+table.rows td { border-top: 1px solid var(--line); padding: 9px 4px; }
+.callRow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.callRow .btn { flex: 1; min-width: 140px; }
+.btn.call { background: var(--red); color: #fff; }
+@media (prefers-color-scheme: dark) { .btn.call { color: #2a0d10; } }
+
+/* Journal and names */
+.logRow { display: grid; grid-template-columns: 36px 1fr; gap: 10px; width: 100%; text-align: left; border: 0; border-top: 1px solid var(--line); background: none; padding: 12px 0; }
+.logRow:first-child { border-top: 0; }
+.logRow .em { font-size: 24px; }
+.addRow { display: flex; gap: 8px; margin: 14px 0; }
+.addRow input { flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--field); min-width: 0; }
+.name { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+.name:first-child { border-top: 0; }
+.name b { font-family: var(--serif); font-variation-settings: 'SOFT' 100; font-size: 22px; font-weight: 600; }
+.name .votes { display: flex; gap: 6px; }
+.name .votes button { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--field); font-size: 20px; }
+.name .votes button.on { border-color: var(--rose); background: var(--roseBg); }
+.name small { display: block; color: var(--soft); font-size: 13px; }
+.name.both b { color: var(--rose); }
+
+/* The week's picture */
+.art { width: min(70vw, 260px); margin: 0 auto 6px; }
+.art img { display: block; width: 100%; height: auto; border-radius: 50%; }
+.bumpPic { display: block; width: 100%; border-radius: 16px; margin: 8px 0; }
+.card .ring { margin-top: 0; }
+
+/* Bump photos */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+.thumb { border: 0; padding: 0; background: none; text-align: center; font-size: 13px; font-weight: 700; color: var(--soft); }
+.thumb img, .thumb .coming { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 14px; background: var(--btn); margin-bottom: 4px; }
+.coming { display: flex !important; flex-direction: column; align-items: center; justify-content: center; font-size: 26px; aspect-ratio: 3 / 4; border-radius: 14px; background: var(--btn); }
+.coming small { font-size: 12px; }
+/* Ultrasounds: wider than tall, like the printouts, two across. */
+.grid.scans { grid-template-columns: 1fr 1fr; }
+.grid.scans .thumb img, .grid.scans .thumb .coming { aspect-ratio: 4 / 3; background: #000; }
+.scanPic { display: block; width: 100%; border: 0; padding: 0; background: none; }
+.scanPic img { display: block; width: 100%; border-radius: 16px; margin: 8px 0; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pair figure { margin: 0; text-align: center; font-weight: 700; color: var(--soft); font-size: 13px; }
+.pair img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 14px; }
+#player { display: none; position: fixed; inset: 0; background: #000; z-index: 20; align-items: center; justify-content: center; }
+#player.open { display: flex; }
+#player img { max-width: 100%; max-height: 100%; object-fit: contain; }
+#player .lbl { position: absolute; bottom: max(24px, env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center; color: #fff; font-family: var(--serif); font-size: 30px; font-weight: 600; text-shadow: 0 2px 8px #000; }
+select { font: inherit; display: block; width: 100%; margin-top: 6px; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--field); }
+
+/* Is it safe? */
+.search { width: 100%; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--field); font-size: 17px; margin-bottom: 10px; }
+.safe .t { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.safe .verdict { font-size: 13px; font-weight: 700; white-space: nowrap; }
+.safe { border-left-width: 6px; }
+.safe.ok { border-left-color: var(--green); }
+.safe.limit { border-left-color: var(--sun); }
+.safe.avoid { border-left-color: var(--red); }
+.safe.ask { border-left-color: var(--plum); }
+
+/* Mood check */
+.opts { display: grid; gap: 6px; margin-top: 8px; }
+.opts button { text-align: left; border: 1.5px solid var(--line); background: var(--field); border-radius: 14px; padding: 11px 14px; }
+.opts button.on { border-color: var(--rose); background: var(--roseBg); font-weight: 700; }
+.row { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; }
+
+/* Baby log */
+.btnRow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.btnRow .btn { padding: 14px 6px; font-size: 15px; }
+.btnRow .btn:only-child { grid-column: 1 / -1; }
+@media (max-width: 360px) { .screen { padding-left: 14px; padding-right: 14px; } }
+
+/* Printing the birth plan: just the plan, as plain text. */
+#printOut { display: none; }
+@media print {
+  body > *:not(#printOut) { display: none !important; }
+  #printOut { display: block; white-space: pre-wrap; font: 13pt/1.5 system-ui, sans-serif; color: #000; }
+}
+
+/* Sheets slide up from the bottom, with a handle. */
+.sheet { display: none; position: fixed; inset: 0; background: rgba(30,18,36,.5); z-index: 10; align-items: flex-end; justify-content: center; }
+.sheet.open { display: flex; animation: fade .2s ease-out; }
+.sheet > div { position: relative; background: var(--card); width: 100%; max-width: 560px; max-height: 92%; overflow-y: auto; border-radius: 26px 26px 0 0; padding: 26px 20px 20px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+.sheet.open > div { animation: rise .28s cubic-bezier(.2,.9,.3,1); }
+.sheet > div::before { content: ''; position: absolute; top: 9px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--line); }
+@keyframes fade { from { opacity: 0; } }
+@keyframes rise { from { transform: translateY(40%); } }
+@media (prefers-reduced-motion: reduce) { .sheet.open, .sheet.open > div { animation: none; } }
+/* The menu: home's round button at the bottom left, over everything but the other sheets; it opens the colored bars
+   on the page's own blush, and turns to a × to close them. Home keeps room under its last card for it. */
+.fab { display: none; position: fixed; z-index: 11; left: 18px; bottom: max(18px, env(safe-area-inset-bottom)); width: 62px; height: 62px; border: 0; border-radius: 50%; padding: 0; place-items: center; color: #fff; background: linear-gradient(145deg, #ee3f7a, #9b5cf0); box-shadow: 0 8px 22px -6px rgba(110,40,120,.55), 0 2px 4px rgba(46,34,54,.18); transition: transform .15s; }
+body[data-screen=home] .fab { display: grid; }
+body:has(.sheet.open:not(#menuSheet)) .fab { display: none; }
+.fab:active { transform: scale(.94); }
+.fab > span { grid-area: 1 / 1; transition: transform .2s, opacity .2s; }
+.fab svg.i { width: 28px; height: 28px; stroke-width: 2.2; }
+.fab .x, body:has(#menuSheet.open) .fab .m { opacity: 0; transform: rotate(-90deg); }
+body:has(#menuSheet.open) .fab .x { opacity: 1; transform: none; }
+.fab .badge { position: absolute; top: -2px; right: -2px; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; background: #fff; color: #c0265e; font: 800 13px/24px system-ui, sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+body:has(#menuSheet.open) .fab .badge { display: none; }
+#home { padding-bottom: 100px; }
+#menuSheet > div { background: var(--bg); padding: 22px 16px 100px; }
+#menuSheet .tiles { margin-top: 6px; }
+.twoBtn { display: flex; gap: 8px; margin-top: 14px; }
+.twoBtn .btn { flex: 1; }
+
+/* Family sharing: the invite QR code (on white, so a camera reads it in any light) and the camera scanning it. */
+.code { text-align: center; }
+.code .qr { background: #fff; width: min(72vw, 280px); margin: 6px auto; border-radius: 12px; padding: 4px; }
+.code .qr svg { display: block; width: 100%; height: auto; }
+.scan { position: relative; aspect-ratio: 1; border-radius: 16px; overflow: hidden; background: #000; margin: 10px 0; }
+.scan video { width: 100%; height: 100%; object-fit: cover; }
+.scan::after { content: ''; position: absolute; inset: 15%; border: 3px solid rgba(255,255,255,.85); border-radius: 14px; }
