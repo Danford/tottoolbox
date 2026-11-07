@@ -1,0 +1,221 @@
+/* tottoolbox.com. The idea is a door frame, the one a family marks a child's height on: painted wall, white casing,
+   pencil marks climbing from before birth to age 7. The wall's colour is the app's; the buttons borrow the raised
+   tiles of the toddler apps. Caprasimo speaks, Atkinson explains, Reenie Beanie only ever writes on the frame. */
+@font-face { font-family: "Caprasimo"; src: url(/fonts/caprasimo.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "Atkinson Next"; src: url(/fonts/atkinson.woff2) format("woff2"); font-weight: 200 800; font-display: swap; }
+@font-face { font-family: "Reenie Beanie"; src: url(/fonts/reenie-beanie.woff2) format("woff2"); font-display: swap; }
+
+:root {
+  --wall: #FFD166;
+  --ink: #1D3557;
+  --casing: #FFFEFA;
+  --groove: #E4E1D8;
+  --pencil: #3C4148;
+  --soft: #46586F;
+  --pad: clamp(1.25rem, 5vw, 4rem);
+  /* A line drawn by hand, for ticks. */
+  --tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6' preserveAspectRatio='none'%3E%3Cpath d='M1 3.4C30 2.2 52 4.3 84 3.1s58-.6 114 .4' fill='none' stroke='%233C4148' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; font: 400 1.0625rem/1.55 "Atkinson Next", system-ui, sans-serif; color: var(--ink); background: var(--casing); overflow-x: clip; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration-thickness: .08em; text-underline-offset: .16em; }
+a:hover { text-decoration-thickness: .16em; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: .2rem; }
+h1, h2 { font-family: "Caprasimo", Georgia, serif; font-weight: 400; line-height: 1.08; letter-spacing: -.005em; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.7rem, 7.2vw, 5.2rem); }
+h1 .h1sub { display: block; font-family: inherit; font-size: clamp(1.1rem, 3.4vw, 1.5rem); line-height: 1.25; margin-top: .4rem; opacity: .8; }
+h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin-bottom: .6em; }
+h3 { font-size: 1.2rem; line-height: 1.3; font-weight: 700; margin: 0 0 .3rem; }
+p { margin: 0 0 .9rem; max-width: 36rem; }
+ul, ol { margin: 0 0 1rem; padding-left: 1.25rem; }
+li { margin-bottom: .3rem; max-width: 36rem; }
+.lede { font-size: clamp(1.2rem, 2.2vw, 1.4rem); line-height: 1.4; margin-top: 1rem; }
+.small { font-size: .95rem; }
+.pencil { font-family: "Reenie Beanie", "Segoe Print", cursive; color: var(--pencil); font-size: 1.75rem; line-height: 1; margin: 0; }
+.skip { position: absolute; left: -999px; top: .5rem; background: var(--ink); color: #fff; padding: .5rem 1rem; z-index: 5; }
+.skip:focus { left: .5rem; }
+
+/* Top bar: sits on the wall. */
+.top { background: var(--wall); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem var(--pad); }
+.brand { display: flex; align-items: center; gap: .55rem; font-family: "Caprasimo", Georgia, serif; font-size: 1.25rem; text-decoration: none; white-space: nowrap; }
+.brand img { border-radius: .55rem; }
+.top nav { display: flex; gap: clamp(.8rem, 2.5vw, 1.8rem); font-weight: 700; }
+.top nav a { text-decoration: none; padding: .35rem 0; }
+.top nav a:hover { text-decoration: underline; }
+
+/* Buttons: a raised tile, like the toddler apps'. */
+.btns { display: flex; flex-wrap: wrap; gap: .8rem; margin: .4rem 0 .9rem; }
+.btn { display: inline-block; background: var(--ink); color: #fff; font-weight: 700; font-size: 1.1rem; line-height: 1.2; text-decoration: none; padding: .9rem 1.5rem; border-radius: .95rem; box-shadow: 0 5px 0 #0D1E36; }
+.btn:hover { background: #274A78; }
+.btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #0D1E36; }
+.btn.quiet { background: var(--casing); color: var(--ink); box-shadow: 0 5px 0 var(--ink); }
+.btn.quiet:active { box-shadow: 0 2px 0 var(--ink); }
+
+/* The frame: white casing with two routed grooves, then the door's edge. */
+.frame { position: relative; background:
+    linear-gradient(90deg, transparent 0 1.1rem, var(--groove) 1.1rem 1.2rem, transparent 1.2rem calc(100% - 3.7rem), var(--groove) calc(100% - 3.7rem) calc(100% - 3.6rem), transparent calc(100% - 3.6rem)),
+    var(--casing);
+  border-right: 2rem solid var(--ink); box-shadow: -5px 0 0 rgba(29, 53, 87, .13); }
+
+/* Home: words on the wall, frame beside them, running from the page's top into the next section. */
+.home .top { position: absolute; left: 0; right: 0; background: none; z-index: 2; }
+.home .top nav { margin-right: 0; }
+.hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); background: var(--wall); }
+.hero-say { padding: 6.5rem var(--pad) 2.8rem; }
+.hero .frame { min-height: 34rem; margin-left: var(--pad); padding: 2rem 0 1.5rem; }
+.marks { list-style: none; margin: 0; padding: 0; height: 100%; min-height: 31rem; display: flex; flex-direction: column-reverse; justify-content: space-between; }
+.marks li { margin: 0; max-width: none; }
+.marks a { display: block; padding: .3rem 0 0 1.9rem; text-decoration: none; position: relative; }
+.marks a::before { content: ""; position: absolute; left: 0; bottom: -.1rem; width: min(100%, 21rem); height: 6px; background: var(--tick) center / 100% 100% no-repeat; transform-origin: left; animation: draw .5s ease-out both; }
+.marks b { font-weight: 400; font-size: 2.35rem; display: inline; }
+.marks i { font-style: normal; font-size: 1.6rem; margin-left: .3rem; opacity: .85; }
+.marks .pencil { display: inline-block; transform: rotate(-1.2deg); transform-origin: left bottom; animation: appear .3s ease-out both; }
+.marks a:hover b, .marks a:focus-visible b { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: .12em; }
+.marks li:nth-child(even) .pencil { transform: rotate(.7deg); }
+/* The marks go up the frame once, on arrival, from before birth to age 7. */
+.marks li:nth-child(2) a::before, .marks li:nth-child(2) .pencil { animation-delay: .18s; }
+.marks li:nth-child(3) a::before, .marks li:nth-child(3) .pencil { animation-delay: .36s; }
+.marks li:nth-child(4) a::before, .marks li:nth-child(4) .pencil { animation-delay: .54s; }
+.marks li:nth-child(5) a::before, .marks li:nth-child(5) .pencil { animation-delay: .72s; }
+.marks li:nth-child(6) a::before, .marks li:nth-child(6) .pencil { animation-delay: .9s; }
+@keyframes draw { from { transform: scaleX(0); } }
+@keyframes appear { from { opacity: 0; } }
+
+/* The path, written down the page. Each stage's pencil label is what the row is keyed on. */
+.path { padding: clamp(3rem, 7vw, 5.5rem) var(--pad); }
+.stages { list-style: none; margin: 2rem 0 0; padding: 0; }
+.stage { display: grid; gap: .5rem 2.5rem; grid-template-columns: minmax(0, 1fr); padding: 1.8rem 0 2.4rem; margin: 0; max-width: none; background: var(--tick) left top / 7rem 6px no-repeat; }
+.stage .pencil { font-size: 2.1rem; }
+.say h3 { font-family: "Caprasimo", Georgia, serif; font-weight: 400; font-size: 1.6rem; margin-bottom: .4rem; }
+.links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font-weight: 700; margin: 0; }
+.stage .carousel { margin-top: .8rem; min-width: 0; }
+.shot { border-radius: 1.15rem; box-shadow: 0 0 0 1px rgba(29, 53, 87, .14); background: #dfe6ee; }
+
+.promise { background: var(--ink); color: #fff; padding: clamp(3rem, 7vw, 5rem) var(--pad); }
+.promise ul { list-style: none; padding: 0; display: grid; gap: 1.1rem 3rem; margin-bottom: 1.8rem; }
+.promise li { margin: 0; max-width: 32rem; }
+.promise b { font-weight: 700; color: #FFD166; }
+
+.local { background: var(--wall); padding: clamp(3rem, 7vw, 5rem) var(--pad); }
+.local .btn { margin-top: .4rem; }
+
+/* An app's page: same wall, same frame, its tick at its height on the way up. */
+.app-hero { background: var(--wall); display: grid; grid-template-columns: minmax(0, 1fr) clamp(3.5rem, 13vw, 11rem); }
+.app-say { padding: clamp(1.2rem, 4vw, 3rem) var(--pad) 2.5rem; min-width: 0; }
+.app-say .pencil { font-size: 2.1rem; margin-bottom: .2rem; }
+.frame.slim { border-right-width: clamp(.6rem, 2vw, 1.5rem); background: var(--casing); box-shadow: -4px 0 0 rgba(29, 53, 87, .13); }
+.tick { position: absolute; left: 0; width: 72%; height: 6px; background: var(--tick) center / 100% 100% no-repeat; }
+.get { display: grid; gap: 1.5rem; margin-top: 1.6rem; }
+.get ol { margin-bottom: .6rem; }
+
+.screens { padding: 2.5rem 0 1rem; }
+.screens .track { --w: clamp(13rem, 58vw, 16.5rem); padding-inline: var(--pad); }
+
+/* Screens to swipe through. The row starts full, from the first screen at its left edge; past that, the screens stop
+   with one in the middle. Arrows and a dot each once site.js has set them up. */
+.track { --w: 11.5rem; position: relative; display: flex; gap: .9rem; overflow-x: auto; padding: .3rem 0 .6rem; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
+.track .shot { flex: none; width: var(--w); scroll-snap-align: center; }
+[data-os] .track { scrollbar-width: none; }
+[data-os] .track::-webkit-scrollbar { display: none; }
+.ctl { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-top: .5rem; }
+.ctl[hidden] { display: none; }
+.ctl > button { flex: none; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: 50%; background: var(--ink); color: #fff; box-shadow: 0 4px 0 #0D1E36; cursor: pointer; }
+.ctl > button:active { transform: translateY(2px); box-shadow: 0 2px 0 #0D1E36; }
+.ctl > button:disabled { opacity: .3; cursor: default; transform: none; }
+.dots { display: flex; flex-wrap: wrap; justify-content: center; flex: 0 1 auto; }
+.dots button { width: 1.15rem; height: 1.6rem; padding: 0; border: 0; cursor: pointer; background: radial-gradient(circle, var(--dot, rgba(29, 53, 87, .25)) .26rem, transparent .29rem); }
+.dots button.on { --dot: var(--ink); }
+
+.does, .terms { padding: 2rem var(--pad); }
+.groups { display: grid; gap: 1.6rem 3rem; }
+.groups ul { margin-bottom: 0; }
+.terms { display: grid; gap: 1.5rem 3rem; padding-bottom: 3rem; }
+.terms h2 { font-size: 1.7rem; margin-bottom: .4em; }
+.source { color: var(--soft); margin: 0; }
+
+.along { display: flex; justify-content: space-between; gap: 1rem; padding: 1.4rem var(--pad); background: var(--wall); font-family: "Caprasimo", Georgia, serif; font-size: 1.25rem; }
+.along a { text-decoration: none; }
+.along a:hover { text-decoration: underline; }
+.along .pencil { display: block; font-size: 1.5rem; }
+.along .up { text-align: right; }
+
+/* Plain pages: how to install, Supporter. */
+.plain-hero { background: var(--wall); padding: clamp(1.2rem, 4vw, 3rem) var(--pad) 2.8rem; }
+.plain-hero h1 { font-size: clamp(2.4rem, 5.6vw, 4rem); max-width: 16em; }
+.plain-hero .lede { max-width: 34rem; }
+.plain { padding: 2.5rem var(--pad) 4rem; max-width: 48rem; }
+.plain h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-top: 2.6rem; }
+.plain h2:first-child { margin-top: 0; }
+.steps { padding-left: 0; list-style: none; counter-reset: step; }
+.steps li { counter-increment: step; position: relative; padding: 0 0 .7rem 2.6rem; margin: 0; }
+.steps li::before { content: counter(step); position: absolute; left: 0; top: -.05em; font-family: "Reenie Beanie", cursive; font-size: 2.2rem; line-height: 1; color: var(--pencil); }
+.steps li p { margin-bottom: .5rem; }
+.scroll-table { overflow-x: auto; margin: 1.2rem 0; }
+table { border-collapse: collapse; width: 100%; min-width: 34rem; }
+th, td { text-align: left; vertical-align: top; padding: .7rem 1rem .7rem 0; border-bottom: 2px solid var(--groove); }
+thead th { font-weight: 700; color: var(--soft); }
+tbody th { font-weight: 700; }
+
+.foot { background: var(--ink); color: #fff; padding: 2.5rem var(--pad) 2rem; display: grid; gap: 1.5rem 3rem; font-size: .98rem; }
+.foot ul { list-style: none; padding: 0; margin: 0; }
+.foot p { margin-bottom: .6rem; }
+
+/* By the visitor's phone, once site.js has looked: iPhones aren't offered an APK. */
+[data-os="ios"] .android { display: none; }
+[data-os="android"] .hero-say .iphone { display: none; }
+
+@media (min-width: 40rem) {
+  .get { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem; align-items: start; }
+  .promise ul, .groups, .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .source { grid-column: 1 / -1; }
+  .foot { grid-template-columns: 1fr 1.3fr 1.6fr; }
+}
+@media (min-width: 56rem) {
+  .home .top { right: min(31rem, 40vw); }
+  .hero { grid-template-columns: minmax(0, 1fr) min(31rem, 40vw); min-height: min(100vh, 52rem); }
+  .hero-say { padding-top: 8.5rem; padding-bottom: 4rem; align-self: center; }
+  .hero .frame { margin-left: 0; min-height: 100%; padding: 2.5rem 0 2rem; }
+  .marks { min-height: 100%; }
+  /* App pages: the frame runs up past the top bar, which stops short of it. */
+  .framed .top { padding-right: calc(clamp(3.5rem, 13vw, 11rem) + 2rem); }
+  .frame.slim { margin-top: -4.4rem; }
+  .stage { grid-template-columns: 11rem minmax(0, 30rem) minmax(0, 1fr); align-items: start; }
+  .stage .pencil { padding-top: .2rem; }
+  .stage .carousel { margin-top: 0; }
+}
+@media (max-width: 26rem) {
+  .brand { font-size: 1.1rem; }
+  .brand img { width: 30px; height: 30px; }
+  .marks b { font-size: 2.1rem; }
+  .marks i { font-size: 1.45rem; }
+}
+@media (max-width: 23rem) {
+  .top { gap: .2rem 1rem; }
+  .top nav { gap: .7rem; font-size: .98rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* The charts to print. On paper only .sheet shows. */
+.sheet { max-width: 44rem; margin: 2rem auto 0; padding: 1.5rem var(--pad); background: #fff; color: #222; }
+.sheet h2 { font-size: 3rem; margin: .2rem 0 1rem; }
+.whose, .prize { font-size: 1.2rem; margin: .4rem 0; }
+.sheet-steps { list-style: none; margin: 0; padding: 0; }
+.sheet-steps li { display: flex; align-items: center; gap: 1rem; border-top: 2px solid #ddd; padding: .55rem 0; }
+.sheet-steps .pic { font-size: 2.6rem; line-height: 1; width: 3.4rem; text-align: center; }
+.sheet-steps .word { flex: 1; font-size: 1.6rem; }
+.sheet-steps .tickbox { width: 2.4rem; height: 2.4rem; border: 3px solid #222; border-radius: .4rem; }
+.sheet-stars { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+.sheet-stars li { aspect-ratio: 1; display: grid; place-items: center; border: 2px solid #bbb; border-radius: .5rem; color: #e4e4e4; font-size: 2.4rem; }
+.sheet-foot { margin: 1rem 0 0; font-size: .85rem; color: #666; text-align: right; }
+@media print {
+  @page { margin: .5in; }
+  body { background: #fff; }
+  .top, .foot, .skip, .noprint { display: none !important; }
+  .sheet { max-width: none; margin: 0; padding: 0; }
+  .sheet-steps li, .sheet-stars { break-inside: avoid; }
+}

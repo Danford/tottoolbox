@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Only the app's own scripts run, and the page talks only to the sharing server: whatever came from another
+     phone, or from Bumplings, can't run as code or send anything anywhere, even if it got past the checks in sync.js.
+     The photo cutout (cutout.js) compiles its own WebAssembly ('wasm-unsafe-eval' allows that and no eval), and
+     in the app reads its files from the APK through appassets.androidplatform.net, which MainActivity answers. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval' https://appassets.androidplatform.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://appassets.androidplatform.net https://sync.tottoolbox.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tot Routines</title>
+<link rel="stylesheet" href="style.css">
+<!-- For Tot Routines on the web (tottoolbox.com/routines/app/): added to an iPhone's home screen it opens like
+     an app. The manifest and icon are only in the web copy (apps/routines/web); the Android app ignores these. -->
+<meta name="theme-color" content="#f6f3ee">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tot Routines">
+</head>
+<body data-screen="boot">
+
+<!-- Something went wrong while starting (boot.js): what, so it can be told to us, rather than a blank page. -->
+<section id="oops" class="screen">
+  <h1>Tot Routines didn't start</h1>
+  <p class="muted">Something went wrong while it was opening. Please send what's below to support@tottoolbox.com so we can fix it.</p>
+  <pre class="oopsWhy" id="oopsWhy"></pre>
+  <button class="btn primary big" id="oopsOpen" hidden>Open anyway</button>
+  <button class="btn big" id="oopsAgain">Try again</button>
+</section>
+
+<!-- This phone's copy is locked (vault.js) with a key that isn't on this phone: it was moved or restored here. -->
+<section id="locked" class="screen">
+  <h1><span class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2ZM8.5 9V7a3.5 3.5 0 0 1 7 0v2M12 14v3"/></svg></span>Tot Routines is locked</h1>
+  <p class="muted">Everything here was locked on the phone it came from, and its key didn't come with it (keys never leave a phone). Unlock it <span id="lockHow"></span>.</p>
+  <div id="lockByKey">
+    <label class="field">Backup key <input type="text" id="lockCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XX"></label>
+    <button class="btn primary big" id="lockOpen">Unlock</button>
+  </div>
+  <div id="lockFamily" hidden>
+    <h3>Shared with your family?</h3>
+    <p class="muted">On another family phone, tap Sharing is on, then Invite another grown-up, and scan its code here.</p>
+    <button class="btn big" id="lockScan">📷 Scan their invite</button>
+  </div>
+  <div class="scan" id="lockScanBox" hidden></div>
+  <p class="advice" id="lockErr" hidden></p>
+  <p style="margin-top:24px"><button class="btn danger" id="lockErase">Start over without it</button></p>
+</section>
+
+<!-- A child's name and birthday: everything else follows from their age. -->
+<section id="setup" class="screen">
+  <!-- Back once there's a child to go back to; not on the very first screen. -->
+  <div class="top" id="setupTop" hidden><button class="link" data-back>‹ Back</button></div>
+  <h1 id="setupTitle">Who is this routine for?</h1>
+  <p class="muted">Routines are tailored to your child's age: what to expect from them, how many steps, how much sleep. It all stays on this phone unless you share it with another grown-up.</p>
+  <label class="field">Name <input type="text" id="kidName" maxlength="30" autocomplete="off" placeholder="e.g. Sam"></label>
+  <label class="field">Birthday <input type="date" id="kidBirth"></label>
+  <label class="check" id="napRow" hidden><input type="checkbox" id="kidNaps" checked> Still takes a nap</label>
+  <p id="setupJoin" hidden><button class="btn">Another grown-up already set this up? Scan their invite</button></p>
+  <p id="expectRow" hidden><button class="btn" id="expectBtn">🤰 We're expecting a baby</button></p>
+  <h3>What they love</h3>
+  <p class="muted">The day plan leans toward these, and puts them into activities ("sort toy cars").</p>
+  <div class="chips" id="kidInterests"></div>
+  <h3>Daycare, nursery or preschool days</h3>
+  <p class="muted">These days get a lighter plan: time outside and books.</p>
+  <div class="chips" id="kidBusy"></div>
+  <h3>School</h3>
+  <label class="check"><input type="checkbox" id="kidSchool"> Goes to school</label>
+  <div id="schoolBox" hidden>
+    <div class="chips" id="schKind"></div>
+    <p class="muted" id="schKindNote"></p>
+    <p class="lbl">School days</p>
+    <div class="chips" id="schDays"></div>
+    <label class="field"><span id="schLeaveLbl">Leaves home at</span> <input type="time" id="schLeave"></label>
+    <div class="schOut">
+      <p class="lbl">Gets there by</p>
+      <div class="chips" id="schTo"></div>
+      <label class="field">Where <input type="text" id="schToWhere" maxlength="40"></label>
+    </div>
+    <label class="field"><span id="schHomeLbl">Home or pick-up time</span> <input type="time" id="schHome"></label>
+    <div class="schOut">
+      <p class="lbl">Gets home by</p>
+      <div class="chips" id="schFrom"></div>
+      <label class="field">Where <input type="text" id="schFromWhere" maxlength="40"></label>
+    </div>
+    <p class="lbl">Day by day</p>
+    <p class="muted" id="schByDayNote"></p>
+    <div id="schByDay"></div>
+    <p class="lbl">Days off</p>
+    <p class="muted">Summer, holidays, teacher workdays, or a year-round school's track-outs. These days get an ordinary plan, with no school in it and no school reminders.</p>
+    <div id="schOff"></div>
+    <button class="btn" id="schAddOff">+ Add days off</button>
+    <label class="check phoneOnly"><input type="checkbox" id="schRemind"> <span id="schRemindLbl">Remind me before leaving and before pick-up</span></label>
+  </div>
+  <h3 id="awayHead">Another home</h3>
+  <label class="check"><input type="checkbox" id="kidAway"> Spends time at another home, like a parent's</label>
+  <div id="awayBox" hidden>
+    <p class="muted">While they're there, their plan, reminders and streaks wait, and you're reminded to pack their bag before they go.</p>
+    <label class="field">Whose home <input type="text" id="awWho" maxlength="24" placeholder="e.g. Dad"></label>
+    <p class="lbl">The usual schedule</p>
+    <div class="chips" id="awWeeks"></div>
+    <div id="awStays"></div>
+    <button class="btn" id="awAddStay">+ Add a time there</button>
+    <p class="lbl">Holidays and swaps</p>
+    <p class="muted">Holidays that switch each year: put in this year's, with "Every other year", and the next one there is two years on. Ones that move, like Thanksgiving, just this once. A swap with us wins over the usual schedule.</p>
+    <div id="awDates"></div>
+    <button class="btn" id="awAddDate">+ Add a holiday or swap</button>
+    <label class="check phoneOnly"><input type="checkbox" id="awRemind"> Remind me to pack their bag, and when they're back</label>
+  </div>
+  <div class="card" id="planCard" hidden></div>
+  <p class="advice" id="setupErr" hidden></p>
+  <button class="btn primary big" id="saveKid">Save</button>
+  <p><button class="btn danger" id="delKid" hidden>Remove this child</button></p>
+</section>
+
+<section id="home" class="screen">
+  <div class="top" id="kids"></div>
+  <!-- The baby on the way or the whole family, in place of a child's page, with the same bar of children above. -->
+  <div id="homePane" hidden></div>
+  <div id="kidPane">
+  <div class="card snap" id="snap"></div>
+  <!-- The routines first, so their Chart buttons are in reach without scrolling; then the day. -->
+  <h2 class="sect">Routines</h2>
+  <div id="routines"></div>
+  <button class="btn big" id="addRoutine">+ Add a routine</button>
+  <div class="card" id="todayCard"></div>
+  <div class="card" id="journalCard"></div>
+  </div>
+  <!-- Under a child's page, the family's and the baby's alike. -->
+  <div class="card tip" id="tipCard"></div>
+  <div class="menu">
+    <button id="shareCard"></button>
+    <button id="setCard"><span class="sq sky" data-ic="settings"></span><span><b>Photos and privacy</b><small>The lock, and the journal in your gallery</small></span><i class="chev" data-ic="chev"></i></button>
+    <button id="openGuide"><span class="sq sun" data-ic="guide"></span><span><b>How to make routines stick</b><small>What helps, when they say no, what's realistic by age</small></span><i class="chev" data-ic="chev"></i></button>
+  </div>
+</section>
+
+<section id="edit" class="screen">
+  <!-- Print and the chart stay together: beside Back, or on a row of their own under it with large text. -->
+  <div class="top"><button class="link" data-back>‹ Back</button><span class="acts"><button class="btn" id="editPrint"><i data-ic="print"></i>Print</button><button class="btn primary" id="editChart"><i data-ic="play"></i>Picture chart</button></span></div>
+  <h1><span class="ico em" id="editEmoji"></span><span id="editName"></span></h1>
+  <p class="muted" id="editIntro"></p>
+  <div class="note" id="editScreens" hidden>Under 2, a printed chart on the wall works better than a phone: pediatricians advise little or no screen time at this age. Tap 🖨 Print, then point to each picture together.</div>
+  <label class="field">Name <input type="text" id="editNameIn" maxlength="30"></label>
+  <label class="field">Usual time (optional) <input type="time" id="editWhen"></label>
+  <div class="phoneOnly">
+    <label class="check"><input type="checkbox" id="editRemind"> <span id="editRemindLbl"></span></label>
+    <p class="advice" id="remindNote" hidden></p>
+    <label class="check"><input type="checkbox" id="editSpeak"> Say each step out loud on the chart</label>
+    <p class="muted" style="margin:-6px 0 0 32px">In your recorded voice if you made one, otherwise the phone's.</p>
+  </div>
+  <p class="muted webOnly">Reminders, spoken steps, and photos and voices on steps need the Android app. The picture chart works here.</p>
+  <div class="advice" id="editAdvice" hidden></div>
+  <h3>Steps, in order</h3>
+  <p class="muted">Tap a step to see what's realistic at <span class="ageNow"></span> and how to teach it. Arrows change the order; ✕ takes a step out.</p>
+  <div id="steps"></div>
+  <button class="btn big" id="addStep">+ Add a step</button>
+  <p style="margin-top:20px"><button class="btn danger" id="delRoutine">Delete this routine</button></p>
+</section>
+
+<!-- The week's plan: what's planned each day, how it balances, and the child's interests. -->
+<section id="week" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="week"></span><span id="weekTitle"></span></h1>
+  <p class="muted">A few planned things a day, never a timetable: the rest is free play, which matters most. Tap anything to see how, swap it, or mark it done.</p>
+  <div id="weekDays"></div>
+  <div class="card" id="balance"></div>
+  <button class="btn big" data-editkid>What they love, busy days and school</button>
+</section>
+
+<!-- The baby on the way: everything Bumplings shares about the pregnancy, with a way into Bumplings to log more. -->
+<section id="baby" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <div id="babyPage"></div>
+</section>
+
+<!-- A child's journal: photos, videos and notes about their routines and activities, shared with the family. -->
+<section id="journal" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button><span class="spacer"></span><button class="btn primary" id="jNew">+ New</button></div>
+  <h1 id="jTitle"></h1>
+  <p class="muted" id="jNote"></p>
+  <div id="jList"></div>
+</section>
+
+<section id="guide" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico sun" data-ic="guide"></span>Making routines stick</h1>
+  <p class="muted">What the research and pediatricians say helps a routine run on its own: what to try first, what to do when they say no, school days, and what's realistic at each age.</p>
+  <div class="card lead"><div class="eyebrow">What helps</div><h2>What makes a routine stick</h2><div id="tips"></div></div>
+  <div class="card lead"><div class="eyebrow">When they say no</div><h2>Why it happens, and what to try</h2><div id="saidNo"></div></div>
+  <div class="card lead"><div class="eyebrow">School days</div><h2>Calmer mornings and afternoons</h2><div id="schoolTips"></div></div>
+  <h2 class="sect">What's realistic, by age</h2>
+  <div id="ages"></div>
+  <div class="card lead"><div class="eyebrow">Good to know</div><h2>When to ask the pediatrician</h2><p id="doctor"></p>
+    <h3>Where this comes from</h3><div class="srcs" id="sources"></div><p class="src" id="ver"></p></div>
+</section>
+
+<!-- The picture chart, handed to the child. Leaving needs a held button so a tap can't close it. -->
+<section id="chart" class="screen">
+  <div class="bar"><button id="exit" aria-label="Hold to leave">✕</button><h1 id="chartTitle"></h1><button id="sayAgain" aria-label="Say it again">🔊</button></div>
+  <div id="exitHint">Hold ✕ to leave</div>
+  <div class="stars" id="stars"></div>
+  <div class="tiles" id="tiles"></div>
+</section>
+<!-- Two pictures for the child to choose between. -->
+<section id="choose" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1 id="chooseTitle"></h1>
+  <div class="tiles one" id="chooseTiles"></div>
+</section>
+<button id="newsToast" aria-live="polite"></button>
+<div id="undoBar"><span id="undoMsg"></span><button class="link" id="undo">Undo</button></div>
+
+<!-- Only on paper: filled in just before printing. -->
+<div id="printArea"></div>
+<div id="yay"><div class="burst">🎉</div><h1>All done!</h1><p id="yayName"></p><button class="btn primary big" id="yayOk" style="max-width:280px">Back</button>
+  <button class="btn big" id="yayJournal" style="max-width:280px;margin-top:10px">📸 Add a photo or note</button></div>
+
+<div class="sheet" id="pickSheet"><div>
+  <h2>Add a routine</h2>
+  <p class="muted">Starts with the steps that suit <span class="ageNow"></span>. You can change everything.</p>
+  <div id="picks"></div>
+  <button class="btn big" data-close>Cancel</button>
+</div></div>
+
+<div class="sheet" id="actSheet"><div id="actBody"></div></div>
+<div class="sheet" id="easySheet"><div id="easyBody"></div></div>
+<div class="sheet" id="awaySheet"><div id="awayBody"></div></div>
+<div class="sheet" id="medSheet"><div id="medBody"></div></div>
+<div class="sheet" id="logSheet"><div id="logBody"></div></div>
+
+<div class="sheet" id="setSheet"><div id="setBody"></div></div>
+
+<div class="sheet" id="shareSheet"><div id="shareBody"></div></div>
+<!-- Over the settings or the sharing: becoming a supporter. -->
+<div class="sheet" id="planSheet"><div id="planBody"></div></div>
+
+<div class="sheet" id="babySheet"><div id="babyBody"></div></div>
+
+<div class="sheet" id="entrySheet"><div id="entryBody"></div></div>
+<div class="sheet" id="seenSheet"><div id="seenBody"></div></div>
+<div class="sheet" id="viewSheet"><div id="viewBody"></div></div>
+<div id="zoom"><div id="zoomStage"></div><button id="zoomClose" aria-label="Close">✕</button><span id="zoomCount"></span>
+  <button class="vnav prev" id="zoomPrev" aria-label="The one before">‹</button><button class="vnav next" id="zoomNext" aria-label="The next one">›</button></div>
+<input type="file" id="jPhotoIn" accept="image/*" multiple hidden>
+<input type="file" id="jVideoIn" accept="video/*" hidden>
+<div class="sheet" id="picSheet"><div id="picBody"></div></div>
+<input type="file" id="kidPicIn" accept="image/*" hidden>
+
+<div class="sheet" id="stepSheet"><div>
+  <h2>Add a step</h2>
+  <h3>Suggested at this age</h3>
+  <div id="stepPicks"></div>
+  <h3>Your own step</h3>
+  <label class="field">What it's called <input type="text" id="ownLabel" maxlength="24" placeholder="e.g. Feed the cat"></label>
+  <div class="emojis" id="ownEmoji"></div>
+  <div class="row" style="display:flex;gap:8px;margin-top:14px"><button class="btn" data-close style="flex:1">Cancel</button><button class="btn primary" id="ownAdd" style="flex:1">Add</button></div>
+</div></div>
+
+<!-- On an iPhone, not yet on its Home Screen (web.js). Above every other sheet. -->
+<div class="sheet" id="homeSheet"><div id="homeBody"></div></div>
+
+<script src="vault.js"></script>
+<script src="boot.js"></script>
+<script src="web.js"></script>
+</body>
+</html>

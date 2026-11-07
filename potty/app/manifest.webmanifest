@@ -1,0 +1,14 @@
+{
+  "name": "Tot Potty: Potty Training",
+  "short_name": "Tot Potty",
+  "description": "Calm potty training for every grown-up who helps, with no ads and no account.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f1f8f6",
+  "theme_color": "#f1f8f6",
+  "icons": [
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "apps": [
+    {
+      "id": "app.tottoolbox",
+      "name": "Tot Toolbox",
+      "emoji": "🧰",
+      "blurb": "Installs and updates the free Tot Toolbox apps.",
+      "versionCode": 5,
+      "versionName": "1.4",
+      "apk": "apks/app.tottoolbox-5.apk",
+      "size": 29447,
+      "sha256": "711892c196fc81c8e43671d39e7c9d4c79a1e67c3be2dbdb3d8b843e0ffd8eac"
+    },
+    {
+      "id": "app.tottoolbox.routines",
+      "name": "Tot Routines",
+      "emoji": "🌙",
+      "blurb": "For grown-ups: build morning, bedtime, mealtime and school-day routines that fit your child's age (1 to 7), with what's realistic to expect and how to make each step stick, and get a balanced plan for each day of the week, tuned to what they love, with when they leave for school and who picks them up. Then hand over a picture chart with photos of their own things and your voice saying each step, print it for the wall, and get a reminder before it starts. Keep a journal of photos, videos and notes about each routine and activity, shared with the other grown-ups' phones.",
+      "versionCode": 101,
+      "versionName": "1.89",
+      "apk": "apks/app.tottoolbox.routines-101.apk",
+      "size": 11715432,
+      "sha256": "4698f27a72eca7e0288c7ae731d8f14cfee368a4d36f7aba4ea6df1043b88d8e"
+    },
+    {
+      "id": "app.tottoolbox.flashcards",
+      "name": "Tot Flash Cards",
+      "emoji": "🐳",
+      "blurb": "Flash cards that sound out every word as the letters light up, real animal and machine sounds, counting from one to ten, and four games of opposites. Thirteen decks: farm, zoo, ocean, bugs, things that go and more.",
+      "versionCode": 45,
+      "versionName": "1.40",
+      "apk": "apks/app.tottoolbox.flashcards-45.apk",
+      "size": 6914014,
+      "sha256": "3f712e9e9f89b323734aa7d6555a143b62799598cb57994bfb536f7519bee6b6"
+    },
+    {
+      "id": "app.tottoolbox.bump",
+      "name": "Bumplings",
+      "emoji": "🤰",
+      "blurb": "For expecting parents: where you are week by week (the baby's size and development, what's happening in the body, and tips for both of you), every checkup, test and vaccine with its real dates for your due date, appointments with questions and notes, a kick counter, a contraction timer that tells you when to call, a journal with weight, blood pressure and blood sugar, a weekly bump photo diary, \"Is it safe?\" answers for food, medicines and everyday things, a birth plan to share or print, baby names you both vote on, the hospital bag, a private mood check, and the warning signs with one-tap calls. After the birth, a baby log for feeds, diapers and sleep, and six months of checkups. Share it between both phones, privately, even with an iPhone: a contraction timed on one shows on the other.",
+      "versionCode": 39,
+      "versionName": "1.22",
+      "apk": "apks/app.tottoolbox.bump-39.apk",
+      "size": 1541113,
+      "sha256": "885a703e8b915913f4301b97d51adac0ddecba17fa70968410be16492377b13b"
+    },
+    {
+      "id": "app.tottoolbox.potty",
+      "name": "Tot Potty",
+      "emoji": "🚽",
+      "blurb": "Potty training, the calm way: check if your child is ready, pick an approach (3-day, child-led or set times) with a plan for each day, and log with one tap. A potty timer that learns how often your child really goes, a sticker chart, a sit-on-the-potty song and handwashing steps for them, naps and nights, guides for poop worries, accidents and regressions, when to call the doctor, and a handoff note for sitters and daycare. Share it with every grown-up who helps, privately, even with an iPhone. Shows on each child's day in Tot Routines.",
+      "versionCode": 8,
+      "versionName": "1.6.1",
+      "apk": "apks/app.tottoolbox.potty-8.apk",
+      "size": 321561,
+      "sha256": "3b591653c31ae44947b08a4a4f3c1e7f37933e81b5ec40f5e82caf7569a8ad88"
+    }
+  ]
+}
