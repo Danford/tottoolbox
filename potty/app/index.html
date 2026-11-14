@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Only the app's own scripts run, and the page talks only to the sharing server: whatever came from another
+     phone can't run as code or send anything anywhere, even if it got past the checks in sync.js. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; connect-src https://sync.tottoolbox.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tot Potty</title>
+<link rel="stylesheet" href="style.css">
+<!-- For Tot Potty on the web (tottoolbox.com/potty/app/): added to an iPhone's home screen it opens like an app.
+     The manifest and icon are only in the web copy (apps/potty/web); the Android app ignores these. -->
+<meta name="theme-color" content="#f1f8f6">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tot Potty">
+</head>
+<body data-screen="setup">
+
+<!-- The first screen, and Settings once set up. -->
+<section id="setup" class="screen">
+  <div class="top" id="setupTop"><button class="link" data-back>‹ Back</button></div>
+  <div class="welcome" id="welcomeArt"></div>
+  <h1 id="setupTitle">Welcome to Tot Potty</h1>
+  <p class="muted" id="setupIntro">Potty training, the calm way: a plan that fits your child, one-tap logging, a timer that learns how often they go, stickers and a song for them, and every grown-up who helps on the same page.</p>
+  <p id="setupJoin"><button class="btn big">👪 Already set up on another phone? Scan its invite</button></p>
+  <label class="field">Your name <small class="muted">(as the other grown-ups see it)</small><input type="text" id="meName" maxlength="30" autocomplete="off" placeholder="e.g. Mom, Dad, Grandma, Maria"></label>
+  <div id="firstKid">
+    <h3>Who's learning?</h3>
+    <label class="field">Child's name <input type="text" id="fkName" maxlength="30" autocomplete="off"></label>
+    <label class="field">Birthday <input type="date" id="fkBirth"></label>
+  </div>
+  <p class="advice" id="setupErr" hidden></p>
+  <button class="btn primary big" id="saveSetup">Save</button>
+  <div id="setupMore">
+    <h3>Children</h3>
+    <div class="card list" id="kidList"></div>
+    <button class="btn big" id="shareBtn2">👪 Sharing</button>
+    <h3>Menu buttons</h3>
+    <p class="muted">How the buttons in the menu look on this phone.</p>
+    <div class="chips" id="look"></div>
+    <div id="notifyRow" hidden><p class="muted">Notifications are off, so the potty timer can't remind you when the app is closed.</p>
+      <button class="btn big" id="notifyBtn">🔔 Turn on reminders</button></div>
+    <div id="exactRow" hidden><p class="muted">Android lets the timer's reminders come up to 10 minutes late unless Tot Potty may set exact alarms.</p>
+      <button class="btn big" id="exactBtn">⏰ Allow exact timer alarms</button></div>
+    <div id="fullRow" hidden><p class="muted">When the timer goes off on a locked phone, Tot Potty can fill the screen with the potty buttons, like an alarm clock, if Android allows it.</p>
+      <button class="btn big" id="fullBtn">📲 Allow the full-screen alarm</button></div>
+    <div id="privRow" hidden>
+      <h3>Backup</h3>
+      <label class="check"><input type="checkbox" id="backupOn"> Back up to my Google account</label>
+      <p class="muted">With Android's own backup, everything comes back on a new or reset phone. Moving straight to a new phone works either way.</p>
+    </div>
+    <button class="btn big" data-go="about">ℹ️ About Tot Potty</button>
+    <p class="muted center" id="ver"></p>
+  </div>
+</section>
+
+<!-- A child's details. -->
+<section id="kidEdit" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1 id="kidTitle">Add a child</h1>
+  <label class="field">Name <input type="text" id="kName" maxlength="30" autocomplete="off"></label>
+  <label class="field">Birthday <input type="date" id="kBirth"></label>
+  <h3>Our words</h3>
+  <p class="muted">The words your family uses. Everyone helping uses the same ones, and the app does too.</p>
+  <div class="row3">
+    <label class="field">Pee <input type="text" id="kPee" maxlength="16" placeholder="pee"></label>
+    <label class="field">Poop <input type="text" id="kPoop" maxlength="16" placeholder="poop"></label>
+    <label class="field">Potty <input type="text" id="kPotty" maxlength="16" placeholder="potty"></label>
+  </div>
+  <h3>Sleep</h3>
+  <p class="muted">No timer reminders while asleep.</p>
+  <div class="row2">
+    <label class="field">Wakes up <input type="time" id="kWake"></label>
+    <label class="field">Bedtime <input type="time" id="kBed"></label>
+  </div>
+  <h3>Stickers</h3>
+  <p class="muted">A sticker goes on the chart by itself for…</p>
+  <div class="chips" id="kStars"></div>
+  <h3>For sitters and daycare</h3>
+  <label class="field">What they wear <input type="text" id="kGear" maxlength="80" placeholder="e.g. underwear by day, a pull-up for nap and night"></label>
+  <label class="field">Anything else to know <textarea id="kNotes" maxlength="600" placeholder="e.g. likes to flush, scared of the hand dryer"></textarea></label>
+  <h3>Doctor</h3>
+  <div class="row2">
+    <label class="field">Name <input type="text" id="kDoc" maxlength="40"></label>
+    <label class="field">Phone <input type="tel" id="kDocPhone" maxlength="20"></label>
+  </div>
+  <p class="advice" id="kErr" hidden></p>
+  <button class="btn primary big" id="kSave">Save</button>
+  <button class="btn danger big" id="kDel">Remove this child</button>
+</section>
+
+<section id="home" class="screen">
+  <div class="top homeTop"><span id="hello"></span><span class="spacer"></span><button class="btn round" data-go="setup" aria-label="Settings" data-ic="settings"></button></div>
+  <div class="chips kids" id="kidChips"></div>
+  <div id="startCard"></div>
+  <div class="card timer" id="timerCard"></div>
+  <div class="logGrid" id="logGrid"></div>
+  <div class="chips where" id="whereChips"></div>
+  <div class="card" id="todayCard"></div>
+  <div class="card" id="starCard"></div>
+  <div class="card" id="planCard"></div>
+  <div class="card" id="insightCard" hidden></div>
+  <div class="card" id="latelyCard" hidden></div>
+</section>
+<!-- Everything else, behind the round button at home's bottom left. -->
+<button class="fab" id="menuBtn" aria-label="Menu"><span class="m" data-ic="menu"></span><span class="x" data-ic="close"></span></button>
+<div class="sheet menuSheet" id="menuSheet"><div>
+  <div class="tiles" id="tools"></div>
+  <div class="menu">
+    <button class="call" data-go="urgent"><span data-sc="call"></span><span class="sq" data-ic="call"></span><span class="lbl"><b>When to call the doctor</b><small>The signs worth a call</small></span><i class="chev" data-ic="chev"></i></button>
+    <button id="shareCard"></button>
+    <button id="routinesBtn" hidden><span data-sc="routines"></span><span class="sq" data-ic="routines"></span><span class="lbl"><b>Open Tot Routines</b><small>The kids' days, naps and bedtimes</small></span><i class="chev" data-ic="chev"></i></button>
+  </div>
+</div></div>
+
+<!-- The child's own screen: their sticker chart, the sit timer with its song, washing hands, and "I went!". -->
+<section id="kidmode" class="screen">
+  <button class="hold" id="kmExit" aria-label="Grown-ups: hold to leave"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17"/><circle class="fill" cx="20" cy="20" r="17"/></svg><span data-ic="lock"></span></button>
+  <div id="kmBody"></div>
+</section>
+
+<section id="progress" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="progress"></span><span id="progTitle">Progress</span></h1>
+  <div id="progBody"></div>
+  <div class="twoBtn"><button class="btn" id="reportShare">📤 Share the week</button><button class="btn primary" id="reportPrint">🖨️ Print or PDF</button></div>
+</section>
+
+<section id="plan" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="plan"></span>The plan</h1>
+  <div id="planBody"></div>
+</section>
+
+<section id="history" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="history"></span>The log</h1>
+  <p class="muted">Everything logged on every phone, newest first. Tap one to change it.</p>
+  <button class="btn primary big" id="addPast">+ Add something from earlier</button>
+  <div id="historyBody"></div>
+</section>
+
+<section id="stickers" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="star"></span>Stickers</h1>
+  <div id="starsBody"></div>
+</section>
+
+<section id="nights" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="night"></span>Naps and nights</h1>
+  <div id="nightsBody"></div>
+</section>
+
+<section id="ready" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="ready"></span>Ready yet?</h1>
+  <div id="readyBody"></div>
+</section>
+
+<section id="learn" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="learn"></span><span id="learnTitle">Learn more</span></h1>
+  <div id="learnBody"></div>
+</section>
+
+<section id="guides" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="guides"></span>Guides</h1>
+  <p class="muted">For the hard parts. Tap one to open it.</p>
+  <div id="guidesBody"></div>
+</section>
+
+<section id="gear" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="gear"></span>What helps</h1>
+  <p class="muted">Tick things off as you get them: it shows on every phone.</p>
+  <div id="gearBody"></div>
+</section>
+
+<section id="handoff" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="note"></span>Handoff note</h1>
+  <p class="muted">For a babysitter, grandparent or daycare: your words, how often to try, the patterns, and what to do after an accident. It's written from what's in the app today.</p>
+  <pre class="card note" id="handoffText"></pre>
+  <div class="twoBtn"><button class="btn" id="handoffShare">📤 Send</button><button class="btn primary" id="handoffPrint">🖨️ Print or PDF</button></div>
+  <p class="muted">Helping often? Invite them to share instead: they can log, and see the timer and the day as it happens. <button class="link" id="handoffInvite">Sharing ›</button></p>
+</section>
+
+<section id="urgent" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1><span class="ico" data-ic="call"></span>When to call the doctor</h1>
+  <div id="urgentBody"></div>
+</section>
+
+<section id="about" class="screen">
+  <div class="top"><button class="link" data-back>‹ Back</button></div>
+  <h1>About Tot Potty</h1>
+  <div class="card"><p id="doctor"></p><p class="muted">No ads, no account. What you log stays on your phones; shared, it's locked before it leaves them.</p><h3>Where this comes from</h3><ul class="real muted" id="sources"></ul></div>
+</section>
+
+<div class="sheet" id="logSheet"><div id="logBody"></div></div>
+<div class="sheet" id="shareSheet"><div id="shareBody"></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="party" aria-hidden="true"></div>
+<!-- What prints: only this, filled in just before (see the print styles). -->
+<pre id="printOut"></pre>
+
+<!-- boot.js opens what's locked (vault.js), then loads the rest. -->
+<script src="vault.js"></script>
+<script src="boot.js"></script>
+</body>
+</html>

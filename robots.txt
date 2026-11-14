@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /routines/plan.html
+
+Sitemap: https://tottoolbox.com/sitemap.xml

@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.tottoolbox.routines",
+      "sha256_cert_fingerprints": ["CC:D5:59:B4:09:81:BF:D4:60:88:DB:CB:E4:B4:3F:38:A0:ED:33:98:3D:43:26:B4:B7:C4:B0:D1:C7:97:27:6E"]
+    }
+  }
+]
