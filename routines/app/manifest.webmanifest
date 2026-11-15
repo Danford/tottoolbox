@@ -1,0 +1,13 @@
+{
+  "name": "Tot Routines",
+  "short_name": "Tot Routines",
+  "description": "Routines, picture charts, day plans and a family journal for little kids, with no ads and no account.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f3ee",
+  "theme_color": "#f6f3ee",
+  "icons": [
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
